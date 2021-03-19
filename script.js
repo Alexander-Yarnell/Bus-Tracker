@@ -29,6 +29,11 @@ let map = new mapboxgl.Map({
 // TODO: add a marker to the map
 let marker = new mapboxgl.Marker().setLngLat([-71.092761, 42.357575]).addTo(map);
 
+//TODO: add images to buss stops
+busStops.forEach((item) => {
+let stops = new mapboxgl.Marker().setLngLat(item).addTo(map);
+});
+
 // counter here represents the index of the current bus stop
 let counter = 0;
 function move() {
