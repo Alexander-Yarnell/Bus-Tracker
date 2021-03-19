@@ -29,10 +29,19 @@ let map = new mapboxgl.Map({
 // TODO: add a marker to the map
 let marker = new mapboxgl.Marker().setLngLat([-71.092761, 42.357575]).addTo(map);
 
-//TODO: add images to buss stops
-busStops.forEach((item) => {
-let stops = new mapboxgl.Marker().setLngLat(item).addTo(map);
-});
+//TODO: add marker to bus stops
+addStops = ()=>{
+	busStops.forEach((item)=>{
+	busStopIcon = document.createElement('img');
+	busStopIcon.src = 'busstop.png';
+	busStopIcon.style.width = busStopIcon.style.height = '25px';
+	new mapboxgl.Marker(busStopIcon).setLngLat([item[0],item[1]]).addTo(map);
+	})
+}
+
+//TODO: add api 
+
+
 
 // counter here represents the index of the current bus stop
 let counter = 0;
@@ -44,7 +53,7 @@ function move() {
     move();
   }, 1000);
 }
-
+addStops();
 // Do not edit code past this point
 if (typeof module !== 'undefined') {
   module.exports = { move, counter, marker, busStops };
