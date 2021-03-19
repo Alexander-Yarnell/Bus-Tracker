@@ -33,7 +33,7 @@ let marker = new mapboxgl.Marker().setLngLat([-71.092761, 42.357575]).addTo(map)
 addStops = ()=>{
 	busStops.forEach((item)=>{
 	busStopIcon = document.createElement('img');
-	busStopIcon.src = 'busstop.png';
+	busStopIcon.src = 'images/busstop.png';
 	busStopIcon.style.width = busStopIcon.style.height = '25px';
 	new mapboxgl.Marker(busStopIcon).setLngLat([item[0],item[1]]).addTo(map);
 	})
