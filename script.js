@@ -26,22 +26,74 @@ let map = new mapboxgl.Map({
   zoom: 14,
 });
 
-// TODO: add a marker to the map
-let marker = new mapboxgl.Marker().setLngLat([-71.092761, 42.357575]).addTo(map);
-
-//TODO: add marker to bus stops
+//TODO: add stop markers
 addStops = ()=>{
 	busStops.forEach((item)=>{
-	busStopIcon = document.createElement('img');
-	busStopIcon.src = 'images/busstop.png';
-	busStopIcon.style.width = busStopIcon.style.height = '25px';
-	new mapboxgl.Marker(busStopIcon).setLngLat([item[0],item[1]]).addTo(map);
+	busStopMarker = document.createElement('img');
+	busStopMarker.src = 'images/busstop.png';
+	busStopMarker.style.width = busStopMarker.style.height = '40px';
+	new mapboxgl.Marker(busStopMarker).setLngLat([item[0],item[1]]).addTo(map);
+  busStopMarker.addEventListener('mouseover', function(){
+    let labelPopup = new mapboxgl.Popup()
+    .setLngLat(item)
+    .setHTML('BUS STOP')
+    .addTo(map);
+    Popups.push(labelPopup);
+  })
+  //Remove Old Marker
+  busStopMarker.addEventListener('mouseleave', function () {
+    Popups.forEach((item)=>{
+      item.remove();
+    })
+});
 	})
 }
 
 //TODO: add api 
+currBusMarkers = [];
+Popups =[];
+async function run(){
+  // get bus data    
+  const locations = await getBusLocations();
+  //console.log(new Date());
+  console.log(locations);
+  currBusMarkers.forEach((item)=>{item.remove();});
+  locations.forEach((item)=>{
+    let busMarker = document.createElement('div');
+    busMarker.className = 'bus-marker';
+    busLong = item.attributes.longitude;
+    busLat = item.attributes.latitude;
+    if(item.attributes.occupancy_status === 'FEW_SEATS_AVAILABLE'){
+      busMarker.style.width = busMarker.style.height = '50px';
+      busMarker.style.backgroundImage = 'url(images/redbus.png)';
+    }else if(item.attributes.occupancy_status === 'MANY_SEATS_AVAILABLE'){
+      busMarker.style.backgroundImage = 'url(images/greenbus.png)';
+    }else {
+      busMarker.style.width = busMarker.style.height = '50px';
+    }
+    busMarker.addEventListener('mouseover', function () {
+    let labelPopup = new mapboxgl.Popup()
+      .setLngLat([item.attributes.longitude, item.attributes.latitude])
+      .setHTML(` BUS ID: ${item.attributes.label}<br> CURRENT BEARING: ${item.attributes.bearing}`)
+      .addTo(map);
+      Popups.push(labelPopup);
+  });
 
+  //Remove Old Popup
+  busMarker.addEventListener('mouseleave', function () {
+    Popups.forEach((item)=>{
+      item.remove();
+    })
+});
 
+  //Add Bus Marker
+  marker = new mapboxgl.Marker(busMarker).setLngLat([busLong,busLat]).addTo(map);
+  currBusMarkers.push(marker);
+
+});
+// timer
+setTimeout(run, 15000);
+}
 
 // counter here represents the index of the current bus stop
 let counter = 0;
@@ -54,7 +106,12 @@ function move() {
   }, 1000);
 }
 addStops();
-// Do not edit code past this point
-if (typeof module !== 'undefined') {
-  module.exports = { move, counter, marker, busStops };
+run();
+
+// Request bus data from MBTA
+async function getBusLocations(){
+	const url = 'https://api-v3.mbta.com/vehicles?filter[route]=1&include=trip';
+	const response = await fetch(url);
+	const json     = await response.json();
+	return json.data;
 }
