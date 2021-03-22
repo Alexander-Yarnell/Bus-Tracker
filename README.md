@@ -10,5 +10,5 @@ Next just open the index.html file in any browser. (I use Chrome)
 ##Future Roadmap
 The next steps for this app include.
 Adding bus routes and scheduels for each bus route.
-Improving the User Interface ( UI ) of the app.
+Improving the ( UI ) User Interface of the app.
 Incorperating google maps to show trafic to get a more realistic ETA ( Estimated Time of Arrival ).
