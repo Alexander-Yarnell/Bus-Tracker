@@ -7,7 +7,7 @@ Extract the zip and open the file provided in your prefered text editor. (I use 
 Navigate to the script.js file and at the very top add your token to the "mapboxgl.accessToken" variable; 
 Next just open the index.html file in any browser. (I use Chrome)
 
-##Future Roadmap
+##Roadmap
 The next steps for this app include.
 Adding bus routes and scheduels for each bus route.
 Improving the ( UI ) User Interface of the app.
